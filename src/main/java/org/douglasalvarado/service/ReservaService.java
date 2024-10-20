@@ -8,35 +8,37 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Service
-public class ReservaService implements ReservaRepository {
-    private HashMap<Long, Reserva> reservas = new HashMap<>();
-    private Long idCounter = 1L;
+public class ReservaService {
 
-    @Override
+    private final ReservaRepository reservaRepository;
+
+    public ReservaService(ReservaRepository reservaRepository) {
+        this.reservaRepository = reservaRepository;
+    }
+
     public Reserva createReserva(Reserva reserva) {
-        reserva.setId(idCounter++);
-        reservas.put(reserva.getId(), reserva);
-        return reserva;
+        return reservaRepository.save(reserva);
     }
 
-    @Override
     public Reserva getReserva(Long id) {
-        return reservas.get(id);
+        return reservaRepository.findById(id).orElse(null);
     }
 
-    @Override
     public List<Reserva> getAllReservas() {
-        return new ArrayList<>(reservas.values());
+        return reservaRepository.findAll();
     }
 
-    @Override
     public Reserva updateReserva(Long id, Reserva reserva) {
-        reservas.put(id, reserva);
-        return reserva;
+        Reserva reservaExistente = reservaRepository.findById(id).orElse(null);
+        if (reservaExistente != null) {
+            reservaExistente.setFecha(reserva.getFecha());
+            reservaExistente.setDescripcion(reserva.getDescripcion());
+            return reservaRepository.save(reservaExistente);
+        }
+        return null;
     }
 
-    @Override
     public void deleteReserva(Long id) {
-        reservas.remove(id);
+        reservaRepository.deleteById(id);
     }
 }

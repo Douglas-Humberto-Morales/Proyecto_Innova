@@ -1,13 +1,9 @@
 package org.douglasalvarado.repository;
 
 import org.douglasalvarado.model.Usuario;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-public interface UsuarioRepository {
-    Usuario createUsuario(Usuario usuario);
-    Usuario getUsuario(Long id);
-    List<Usuario> getAllUsuarios();
-    Usuario updateUsuario(Long id, Usuario usuario);
-    void deleteUsuario(Long id);
+@Repository
+public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 }

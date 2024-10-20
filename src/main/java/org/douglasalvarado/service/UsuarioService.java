@@ -9,43 +9,37 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Service
-public class UsuarioService implements UsuarioRepository {
-    private HashMap<Long, Usuario> usuarios = new HashMap<>();
-    private Long idCounter = 1L;
+public class UsuarioService {
 
-    @Override
+    private final UsuarioRepository usuarioRepository;
+
+    public UsuarioService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
+
     public Usuario createUsuario(Usuario usuario) {
-        usuario.setId(idCounter++);
-        usuarios.put(usuario.getId(), usuario);
-        return usuario;
+        return usuarioRepository.save(usuario);
     }
 
-    @Override
     public Usuario getUsuario(Long id) {
-        return usuarios.get(id);
+        return usuarioRepository.findById(id).orElse(null);
     }
 
-    @Override
     public List<Usuario> getAllUsuarios() {
-        return new ArrayList<>(usuarios.values());
+        return usuarioRepository.findAll();
     }
 
-    @Override
     public Usuario updateUsuario(Long id, Usuario usuario) {
-        Usuario usuarioExistente = usuarios.get(id);
-
+        Usuario usuarioExistente = usuarioRepository.findById(id).orElse(null);
         if (usuarioExistente != null) {
             usuarioExistente.setNombre(usuario.getNombre());
             usuarioExistente.setCorreo(usuario.getCorreo());
-            usuarios.put(id, usuarioExistente);
-            return usuarioExistente;
+            return usuarioRepository.save(usuarioExistente);
         }
-
         return null;
     }
 
-    @Override
     public void deleteUsuario(Long id) {
-        usuarios.remove(id);
+        usuarioRepository.deleteById(id);
     }
 }
